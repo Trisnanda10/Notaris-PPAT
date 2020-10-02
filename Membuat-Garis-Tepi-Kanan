@@ -1,0 +1,57 @@
+Sub membuatgaristepi()
+'
+' membuatgaristepi Macro
+'
+'
+Dim d1, d2, xt As Long
+Dim h, i, jb As Integer
+Dim DP As Object
+    Set DP = ActiveDocument.BuiltInDocumentProperties
+    jb = DP("Number of Lines")
+    Selection.HomeKey Unit:=wdStory
+For h = 1 To jb
+Selection.EndKey
+Selection.Start = Selection.End - 1
+If Selection.Text = "#" Then
+Selection.Delete
+Selection.MoveStart Unit:=wdCharacter, Count:=1
+GoTo lewat
+ElseIf Selection.Text = "@" Then
+Selection.MoveEnd Unit:=wdCharacter, Count:=1
+Selection.Delete
+GoTo Usai
+End If
+
+Selection.Collapse Direction:=wdCollapseEnd
+If Selection.Paragraphs.Alignment = wdAlignParagraphCenter Then
+    Selection.HomeKey xt = Selection.Information(wdHorizontalPositionRelativeToTextBoundary)
+    Selection.Paragraphs.Alignment = wdAlignParagraphLeft
+  
+    For i = 1 To 200
+    Selection.InsertAfter "-"
+    Selection.Collapse Direction:=wdCollapseEnd
+    d1 = Selection.Information(wdHorizontalPositionRelativeToTextBoundary)
+        If d1 >= xt Then Exit For
+    Next i
+End If
+
+Selection.EndKey
+d1 = Selection.Information(wdHorizontalPositionRelativeToTextBoundary)
+d2 = d1
+ For i = 1 To 200
+ Selection.InsertAfter "-"
+ Selection.Collapse Direction:=wdCollapseEnd
+ d1 = Selection.Information(wdHorizontalPositionRelativeToTextBoundary)
+    If d1 < d2 Then Exit For
+    d2 = d1
+Next i
+Selection.TypeBackspace
+Selection.MoveStart Unit:=wdCharacter, Count:=1
+lewat:
+
+StatusBar = "memproses baris ke " & h & " dari " & jb & "SUCCESS"
+Next h
+
+Usai:
+MsgBox "Dokumen Anda telah berhasil diproses" & vbCr & vbCr & "SUCCESS"
+End Sub
